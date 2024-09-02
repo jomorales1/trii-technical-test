@@ -1,0 +1,154 @@
+{
+	"info": {
+		"_postman_id": "a03025f3-169c-4e37-8874-0535f986ddb1",
+		"name": "Trii Technical Test",
+		"description": "## Description\n\nThis Postman collection consists of two GET requests designed to interact with the Rick and Morty API. The first request retrieves character data from the API, while the second request allows you to download the results as a ZIP file.\n\n---\n\n## Requests\n\n### 1\\. **Get Rick and Morty Characters**\n\n- **Endpoint:** `http://localhost:8000/v1/search`\n    \n- **Method:** `GET`\n    \n- **Description:**\n    \n    - This request fetches a list of characters from the Rick and Morty API. You can filter characters by various criteria such as name, status and gender using query parameters as well as specifying a certain results page. If the `generate_zip` param has `true` as value the api will generate a zip file and return its name as part of the response (the filename consists of a unique 16 character length token).\n        \n- **Example Request URL:**\n    \n    - `http://localhost:8000/v1/search?page=1&name=Rick&status=alive&generate_zip=true`\n        \n- **Query Parameters:**\n    \n    - `page` (optional): Results page.\n        \n    - `name` (optional): Filter characters by name.\n        \n    - `status` (optional): Filter characters by their status (alive, dead, unknown).\n        \n    - `gender` (optional): Filter characters by gender (male, female, genderless, unknown).\n        \n    - `generate_zip` (optional): Boolean that indicates if the results will be saved in a zip file.\n        \n\n### 2\\. **Download Characters as ZIP**\n\n- **Endpoint:** `http://localhost:8000/public/exports/{filename}`\n    \n- **Method:** `GET`\n    \n- **Description:**\n    \n    - This request triggers the download of a ZIP file containing the results from the Rick and Morty API request. The ZIP file includes all relevant data formatted in a JSON file.\n        \n- **Headers:**\n    \n    - `Content-Type`: `application/zip`\n        \n- **Example Request URL:**\n    \n    - `https://yourserver.com/download`\n        \n\n---\n\n## Usage\n\n1. **Get Characters:** Start by sending the first request to retrieve character data from the Rick and Morty API.\n    \n2. **Download ZIP:** Once you have the data, use the second request to download the ZIP file for easy storage or sharing.\n    \n\n## Notes\n\n- Make sure to replace any placeholders in the URLs with actual values.\n    \n- You can customize the query parameters in the first request to retrieve specific character data.\n    \n\n---\n\n## Dependencies\n\n- Internet connection to access the Rick and Morty API.\n    \n- A valid server endpoint for downloading the ZIP file.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "25825345"
+	},
+	"item": [
+		{
+			"name": "Search",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"if (jsonData.zip_filename) {",
+							"    pm.collectionVariables.set(\"filename\", jsonData.zip_filename);",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/search?page=1&name=Rick&status=alive&gender=male&generate_zip=true",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"search"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "name",
+							"value": "Rick"
+						},
+						{
+							"key": "status",
+							"value": "alive",
+							"description": "[\"alive\", \"dead\", \"unknown\"]"
+						},
+						{
+							"key": "gender",
+							"value": "male",
+							"description": "[\"female\", \"male\", \"genderless\", \"unknown\"]"
+						},
+						{
+							"key": "generate_zip",
+							"value": "true"
+						}
+					]
+				},
+				"description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+			},
+			"response": []
+		},
+		{
+			"name": "Get Zip File",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/zip",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{exports_url}}/public/exports/{{filename}}",
+					"host": [
+						"{{exports_url}}"
+					],
+					"path": [
+						"public",
+						"exports",
+						"{{filename}}"
+					]
+				},
+				"description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8000/v1"
+		},
+		{
+			"key": "exports_url",
+			"value": "http://localhost:8000",
+			"type": "string"
+		},
+		{
+			"key": "filename",
+			"value": "none",
+			"type": "string"
+		}
+	]
+}

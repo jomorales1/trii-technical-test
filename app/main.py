@@ -1,10 +1,14 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
+import os
 import uvicorn
 
 from app.config import settings
 from app.routers.search import search
+
+cd = os.path.dirname(os.path.abspath(__file__))
 
 # Create FastAPI instance
 app = FastAPI(
@@ -13,6 +17,9 @@ app = FastAPI(
     version="0.1.0",
     root_path=settings.root_path,
 )
+
+# Add static files
+app.mount("/public", StaticFiles(directory=cd + "/public"), name="public")
 
 # Add CORS middleware
 app.add_middleware(

@@ -1,9 +1,7 @@
 services:
   api:
-    image: jomorales/trii-technical-test:1.0.0
+    image: jomorales1/trii-technical-test:1.0.0
     container_name: trii-technical-test
     restart: always
     ports:
       - 8000:8000
-    volumes:
-      - ./app:/app

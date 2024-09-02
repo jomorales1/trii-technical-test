@@ -5,6 +5,7 @@ from app.helpers.ram import get_rick_and_morty_characters
 
 import os
 import json
+import shutil
 import zipfile
 import secrets
 
@@ -34,6 +35,6 @@ async def search(query_params: RickAndMortyParams = Depends()):
         with zipfile.ZipFile(exports_dir + f"/{token}.zip", "w") as zipf:
             zipf.write(exports_dir + f"/{token}/data.json", "data.json", zipfile.ZIP_DEFLATED)
         # Clean up
-        os.remove(exports_dir + f"/{token}/data.json")
+        shutil.rmtree(exports_dir + f"/{token}")
         response["zip_filename"] = f"{token}.zip"
     return response
